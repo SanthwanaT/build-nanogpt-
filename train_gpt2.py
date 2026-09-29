@@ -171,3 +171,19 @@ class GPT(nn.Module):
             print(f"using fused damW: {use_fused}")
         optimizer = torch.optim.AdamW(optim_groups, lr=learning_rate, betas=(0.9, 0.95), eps=1e-8, fused=use_fused)
         return optimizer
+    
+    #==============================================================================================================================================================================
+    
+    import tiktoken
+    import numpy as np 
+    
+    """ This helper loads one shards of pretokenized training data and turns it into a pytorch tensor 
+    the model can use . 
+    """
+    def load_tokens(filename):
+        npt = np.load(filename)
+        npt = npt.astype(np.int32)
+        ptt = torch.tensor(npt, dtype=torch.long)
+        return ptt
+    
+    
