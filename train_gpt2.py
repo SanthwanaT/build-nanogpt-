@@ -163,3 +163,11 @@ class GPT(nn.Module):
         if master_process :
             print(f"num decayed parameter tensors : {len(decay_params)}, with {num_decay_params:,} parameters")
             print(f"num non-decayed parameter tensors :{len(nodecay_params)}, with {num_nodecay_params:,} parameters ")
+            
+        # Create adam optimizer and use the fused version if it is available 
+        fused_available = 'fused' in inspect.signature(torch.optim.AdamW).parameters  # checks whether the adam optimizer accepts the argument called fused 
+        use_fused = fused_available and device_type == 'cuda'
+        if master_process :
+            print(f"using fused damW: {use_fused}")
+        optimizer = torch.optim.AdamW(optim_groups, lr=learning_rate, betas=(0.9, 0.95), eps=1e-8, fused=use_fused)
+        return optimizer
