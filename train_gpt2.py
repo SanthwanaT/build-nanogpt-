@@ -186,4 +186,10 @@ class GPT(nn.Module):
         ptt = torch.tensor(npt, dtype=torch.long)
         return ptt
     
-    
+    class DataLoaderLite:
+        def __init__(self, B, T, process_rank, num_process, split):
+            self.B = B 
+            self.T = T 
+            self.process_rank = process_rank
+            self.num_process = num_process 
+            assert split in {'train', 'val'}
