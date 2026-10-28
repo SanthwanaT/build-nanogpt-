@@ -193,3 +193,15 @@ class GPT(nn.Module):
             self.process_rank = process_rank
             self.num_process = num_process 
             assert split in {'train', 'val'}
+            
+            # get the shared file names 
+            data_root = 'edu_fineweb10B'
+            shards = os.listdir(data_root)
+            shards = [s for s in shards if split in s ]
+            shards = sorted(shards)
+            shards = [os.path.join(data_root, s) for s in shards]
+            self.shards = shards
+            assert len(shards) > 0, f"no shards found for split {split}"
+            if master_process :
+                print(f"found {len(shards)} shards for split {split}")
+            self.reset()            
