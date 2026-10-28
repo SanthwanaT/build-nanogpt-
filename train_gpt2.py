@@ -197,7 +197,7 @@ class GPT(nn.Module):
             # get the shared file names 
             data_root = 'edu_fineweb10B'
             shards = os.listdir(data_root)
-            shards = [s for s in shards if split in s ]
+            shards = [s for s in shards if split in s ] # go through each file names in list, -- list comprehension 
             shards = sorted(shards)
             shards = [os.path.join(data_root, s) for s in shards]
             self.shards = shards
@@ -205,3 +205,8 @@ class GPT(nn.Module):
             if master_process :
                 print(f"found {len(shards)} shards for split {split}")
             self.reset()            
+            
+        def reset(self):
+            self.current_shard = 0 
+            self.tokens = load_tokens(self.shards[self.current_shard])
+            self.current_position = self.B * self.T * self.process_rank
